@@ -1,0 +1,20 @@
+name: build
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+      - uses: actions/cache@v4
+        with:
+          path: deps
+          key: deps-${{ hashFiles('scripts/fetch-deps.sh') }}
+      - run: ./scripts/fetch-deps.sh
+      - run: dotnet build -c Release serverside_qol-autofeed.sln
+      - run: dotnet test -c Release tests/AutoFeed.Core.Tests
