@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>ServersideQoL.AutoFeed</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../AutoFeed.Core/AutoFeed.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="ServersideQoL" HintPath="$(DepsDir)ServersideQoL.dll" Private="false" />
+    <Reference Include="BepInEx" HintPath="$(DepsDir)BepInEx.dll" Private="false" />
+    <Reference Include="0Harmony" HintPath="$(DepsDir)0Harmony.dll" Private="false" />
+    <Reference Include="YamlDotNet" HintPath="$(DepsDir)YamlDotNet.dll" Private="false" />
+    <Reference Include="assembly_valheim" HintPath="$(DepsDir)assembly_valheim.dll" Private="false" />
+    <Reference Include="assembly_utils" HintPath="$(DepsDir)assembly_utils.dll" Private="false" />
+    <Reference Include="SoftReferenceableAssets" HintPath="$(DepsDir)SoftReferenceableAssets.dll" Private="false" />
+    <Reference Include="UnityEngine" HintPath="$(DepsDir)UnityEngine.dll" Private="false" />
+    <Reference Include="UnityEngine.CoreModule" HintPath="$(DepsDir)UnityEngine.CoreModule.dll" Private="false" />
+  </ItemGroup>
+  <Target Name="GenerateBuildInfo" BeforeTargets="CoreCompile">
+    <PropertyGroup>
+      <BuildInfoFile>$(IntermediateOutputPath)BuildInfo.cs</BuildInfoFile>
+    </PropertyGroup>
+    <WriteLinesToFile File="$(BuildInfoFile)" Overwrite="true" Lines="namespace ServersideQoL.AutoFeed%3B%0Apartial class AutoFeedPlugin%0A{%0A  public const string PluginVersion = &quot;$(Version)&quot;%3B%0A}" />
+    <ItemGroup>
+      <Compile Include="$(BuildInfoFile)" />
+    </ItemGroup>
+  </Target>
+</Project>

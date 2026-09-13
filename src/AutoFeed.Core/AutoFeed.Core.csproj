@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>ServersideQoL.AutoFeed</RootNamespace>
+  </PropertyGroup>
+</Project>
