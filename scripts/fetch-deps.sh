@@ -30,12 +30,15 @@ if [ ! -f deps/assembly_valheim.dll ]; then
     unzip -oq "$dd_zip" -d .cache/tools/DepotDownloader
     chmod +x .cache/tools/DepotDownloader/DepotDownloader
   fi
-  # NOTE: the actual depot layout is "valheim_server/Data/Managed/*.dll"
-  # (not "valheim_server_Data" as the folder name might suggest) -- verified
-  # against the depot 896663 manifest.
-  printf 'regex:.*/Data/Managed/.*\\.dll\n' > .cache/filelist.txt
+  # NOTE: the depot layout differs by host OS -- verified against manifests:
+  # macOS/Windows depots use "valheim_server/Data/Managed/*.dll", but the
+  # Linux depot uses "valheim_server_Data/Managed/*.dll" (underscore, no
+  # slash before "Data"). DepotDownloader auto-selects the depot matching
+  # the runner's OS, so both layouts must be matched or CI (ubuntu) silently
+  # downloads 0 matching files while macOS succeeds.
+  printf 'regex:.*[/_]Data/Managed/.*\\.dll\n' > .cache/filelist.txt
   .cache/tools/DepotDownloader/DepotDownloader -app 896660 -filelist .cache/filelist.txt -dir .cache/valheim
-  find .cache/valheim -path '*/Data/Managed/*.dll' -exec cp {} deps/ \;
+  find .cache/valheim \( -path '*/Data/Managed/*.dll' -o -path '*_Data/Managed/*.dll' \) -exec cp {} deps/ \;
   [ -f deps/assembly_valheim.dll ] || { echo "ERROR: assembly_valheim.dll not found in Steam depot download" >&2; exit 1; }
 fi
 
